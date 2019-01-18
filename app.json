@@ -29,7 +29,7 @@
     "android": {
       "package": "com.mhxy.yaoming",
       "versionCode": 1,
-      "icon": "./assets/images/icon.png"
+      "icon": "./assets/images/ic_launcher.png"
     }
   }
 }

@@ -6,7 +6,8 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { createForm } from 'rc-form';
+import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
 
 const styles = StyleSheet.create({
@@ -33,9 +34,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  footerContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  }
 });
 
-export default class HomeScreen extends React.Component {
+class HomeScreen extends React.Component {
   static navigationOptions = {
     title: '梦幻答题',
   };
@@ -43,7 +49,7 @@ export default class HomeScreen extends React.Component {
   state = {
     start: false,
     arr: [],
-    checkedArr: [],
+    i: 0,
   };
 
   componentWillMount() {
@@ -53,65 +59,68 @@ export default class HomeScreen extends React.Component {
     this.setState({ arr });
   }
 
-  loookAnwser = (i) => {
-    let checkedArr = this.state.checkedArr;
-    checkedArr[i] = true;
-    console.log(checkedArr, '@@@@');
-    this.setState({ checkedArr });
+  checkMyGrade = () => {
+    const { checkedArr } = this.state;
+    this.props.navigation.navigate('Details', {
+      checkedArr,
+    });
   }
-  hiddenAnwser = (i) => {
-    let checkedArr = this.state.checkedArr;
-    checkedArr[i] = false;
-    console.log(checkedArr, '@@@@');
-    this.setState({ checkedArr });
+
+  nextPage = (i) => {
+    this.props.form.validateFields((error, value) => {
+      if (!error) {
+        console.log(value, '@@@');
+      }
+    });
   }
 
   render() {
-    const { start, arr, checkedArr } = this.state;
+    const { start, arr, i } = this.state;
+    const { form } = this.props;
+    const v = arr[i];
+    const { title = '', option = [], anwser = '' } = v;
     return (
       <View style={styles.container}>
         {!start &&
           <View style={styles.GetStart}>
-            <Button title='GetStart' onPress={() => this.setState({ start: true })} />
+            <TouchableOpacity onPress={() => this.setState({ start: true })} >开始答题</TouchableOpacity>
           </View>
         }
-        <ScrollView>
-          {
-            start &&
-            arr.map((v, i) => {
-              const { title = '', option = [], anwser = '' } = v;
-              return (
-                <View key={i} style={styles.Content}>
-                  <View style={styles.topicContent}>
-                    <Text style={{ fontSize: 26 }}>题目：{title}</Text>
-                  </View>
-                  <View>
-                    {option.map((item, index) => {
-                      return (
-                        <Text key={index}>{index + '. ' + item}</Text>
-                      );
-                    })}
-                  </View>
-                  <View style={{ flex: 1 }}></View>
-                  <View style={styles.anwserContent}>
-                    <Text>答案：</Text>
-                    {
-                      !checkedArr[i] ?
-                        <TouchableOpacity onPress={() => this.loookAnwser(i)} ><Icon name='eye-slash' type='font-awesome' /></TouchableOpacity> :
-                        <TouchableOpacity onPress={() => this.hiddenAnwser(i)} ><Icon name='eye' type='font-awesome' /></TouchableOpacity>
-                    }
-                    {
-                      checkedArr[i] &&
-                      <Text style={{ marginLeft: 10 }}>{anwser}</Text>
-                    }
-                  </View>
-                </View>
-              );
-            })
-          }
-        </ScrollView>
+        {start &&
+          <ScrollView>
+            <View key={i} style={styles.Content}>
+              <View style={styles.topicContent}>
+                <Text style={{ fontSize: 26 }}>题目：{title}</Text>
+              </View>
+              <View>
+                {option.map((item, index) => {
+                  return (
+                    <Text key={index}>{index + '. ' + item}</Text>
+                  );
+                })}
+              </View>
+              <View style={{ flex: 1 }}></View>
+              <View style={styles.footerContent}>
+                {i < 9 ?
+                  <TouchableOpacity
+                    onPress={() => this.nextPage(i, anwser)}
+                  >
+                    <Text>下一页</Text>
+                  </TouchableOpacity> :
+                  <TouchableOpacity
+                    onPress={this.checkMyGrade}
+                  >
+                    <Text>查看分数</Text>
+                  </TouchableOpacity>
+                }
+              </View>
+            </View>
+          </ScrollView>
+        }
       </View>
     );
   }
 }
 
+
+export default createForm()(HomeScreen);
