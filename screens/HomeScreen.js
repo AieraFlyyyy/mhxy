@@ -34,8 +34,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerContent: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     padding: 10,
   },
   normalOption: {
@@ -80,6 +81,16 @@ class HomeScreen extends React.Component {
     const { selectAnwser, arr, startTime } = this.state;
     const endTime = new Date();
     const time = endTime - startTime;
+    let useTime = '';
+    if (time < 1000) {
+      useTime = '小于1秒钟！';
+    } else if (time > 1000 && time < 60000) {
+      useTime = Math.floor(time / 1000) + '秒';
+    } else if (time > 60000 && time < 3600000) {
+      useTime = Math.floor(time / 60000) + '分钟' + Math.floor(time % 60000) + '秒';
+    } else {
+      useTime = '超过一个小时了，你也太慢了8。。';
+    }
     let grade = 0;
     arr.map((v, i) => {
       const { anwser = '' } = v;
@@ -88,16 +99,14 @@ class HomeScreen extends React.Component {
       }
     });
     this.props.navigation.push('Detail', {
-      grade, time,
+      grade, useTime,
     });
-    console.log(grade, "@@@", time.toLocaleString());
   }
 
   selectAnwser = (select) => {
     const { i } = this.state;
     const selectAnwser = this.state.selectAnwser;
     this.state.selectAnwser.splice(i, 1, select);
-    console.log(this.state.selectAnwser, '==arr', select, '===select', i, '===index');
     this.setState({ selectAnwser });
   }
 
@@ -142,11 +151,19 @@ class HomeScreen extends React.Component {
                   );
                 })}
               </View>
-              <View style={{ flex: 1 }}></View>
+              <View style={{ flex: 1, padding: 30 }}></View>
               <View style={styles.footerContent}>
+                {
+                  i > 0 &&
+                  <TouchableOpacity
+                    onPress={() => this.preViewPage(i)}
+                  >
+                    <Text>上一页</Text>
+                  </TouchableOpacity>
+                }
                 {i < 9 ?
                   <TouchableOpacity
-                    onPress={() => this.nextPage(i, anwser)}
+                    onPress={() => this.nextPage(i)}
                   >
                     <Text>下一页</Text>
                   </TouchableOpacity> :

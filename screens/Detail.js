@@ -13,6 +13,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  bodyContent: {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footerT: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default class HomeScreen extends React.Component {
@@ -30,10 +40,21 @@ export default class HomeScreen extends React.Component {
     this.setState({ arr });
   }
 
+  restart = () => {
+    this.props.navigation.pop();
+  }
+
   render() {
+    const { grade, useTime } = this.props.navigation.state.params;
     return (
       <View style={styles.container}>
-        <Text>得分！</Text>
+        <View style={styles.bodyContent}>
+          <Text>您总共对了： {grade}道题</Text>
+          <Text>总共花了： {useTime}</Text>
+        </View>
+        <TouchableOpacity style={styles.footerT} onPress={this.restart}>
+          <Text>重新答题</Text>
+        </TouchableOpacity>
       </View>
     );
   }
