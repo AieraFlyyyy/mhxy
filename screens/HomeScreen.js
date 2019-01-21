@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-// import { createForm } from 'rc-form';
 // import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
 
@@ -38,7 +37,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-  }
+  },
+  normalOption: {
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 5,
+  },
+  selectedOption: {
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 5,
+    borderColor: 'red',
+  },
 });
 
 class HomeScreen extends React.Component {
@@ -49,7 +59,7 @@ class HomeScreen extends React.Component {
   state = {
     start: false,
     arr: [],
-    selectAnwser: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
+    selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     i: 0,
     time: '',
   };
@@ -77,14 +87,17 @@ class HomeScreen extends React.Component {
         grade++;
       }
     });
-    this.props.navigation.push('Details', {
+    this.props.navigation.push('Detail', {
       grade, time,
     });
+    console.log(grade, "@@@", time.toLocaleString());
   }
 
-  selectAnwser = (select, index) => {
-    let selectAnwser = this.state.selectAnwser;
-    selectAnwser.splice(index, 1, select);
+  selectAnwser = (select) => {
+    const { i } = this.state;
+    const selectAnwser = this.state.selectAnwser;
+    this.state.selectAnwser.splice(i, 1, select);
+    console.log(this.state.selectAnwser, '==arr', select, '===select', i, '===index');
     this.setState({ selectAnwser });
   }
 
@@ -101,8 +114,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { start, arr, i } = this.state;
-    const { form } = this.props;
+    const { start, arr, i, selectAnwser } = this.state;
     const v = arr[i];
     const { title = '', option = [], anwser = '' } = v;
     return (
@@ -122,9 +134,10 @@ class HomeScreen extends React.Component {
               </View>
               <View>
                 {option.map((item, index) => {
+                  const selected = selectAnwser[i] === item ? true : false;
                   return (
-                    <TouchableOpacity key={index} onPress={() => this.selectAnwser(item, index)}>
-                      <Text key={index}>{index + '. ' + item}</Text>
+                    <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
+                      <Text style={{ fontSize: 18 }} key={index}>{index + '. ' + item}</Text>
                     </TouchableOpacity>
                   );
                 })}
