@@ -6,8 +6,8 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import { createForm } from 'rc-form';
-import { Toast } from 'antd-mobile';
+// import { createForm } from 'rc-form';
+// import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
 
 const styles = StyleSheet.create({
@@ -49,7 +49,9 @@ class HomeScreen extends React.Component {
   state = {
     start: false,
     arr: [],
+    selectAnwser: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
     i: 0,
+    time: '',
   };
 
   componentWillMount() {
@@ -59,19 +61,43 @@ class HomeScreen extends React.Component {
     this.setState({ arr });
   }
 
+  begin = () => {
+    const startTime = new Date();
+    this.setState({ start: true, startTime });
+  }
+
   checkMyGrade = () => {
-    const { checkedArr } = this.state;
-    this.props.navigation.navigate('Details', {
-      checkedArr,
+    const { selectAnwser, arr, startTime } = this.state;
+    const endTime = new Date();
+    const time = endTime - startTime;
+    let grade = 0;
+    arr.map((v, i) => {
+      const { anwser = '' } = v;
+      if (anwser === selectAnwser[i]) {
+        grade++;
+      }
+    });
+    this.props.navigation.push('Details', {
+      grade, time,
     });
   }
 
+  selectAnwser = (select, index) => {
+    let selectAnwser = this.state.selectAnwser;
+    selectAnwser.splice(index, 1, select);
+    this.setState({ selectAnwser });
+  }
+
+  preViewPage = (i) => {
+    this.setState({ i: i - 1 });
+  }
+
   nextPage = (i) => {
-    this.props.form.validateFields((error, value) => {
-      if (!error) {
-        console.log(value, '@@@');
-      }
-    });
+    this.setState({ i: i + 1 })
+  }
+
+  reStart = () => {
+    this.setState({ i: 0 });
   }
 
   render() {
@@ -83,19 +109,23 @@ class HomeScreen extends React.Component {
       <View style={styles.container}>
         {!start &&
           <View style={styles.GetStart}>
-            <TouchableOpacity onPress={() => this.setState({ start: true })} >开始答题</TouchableOpacity>
+            <TouchableOpacity onPress={this.begin} >
+              <Text>开始答题</Text>
+            </TouchableOpacity>
           </View>
         }
         {start &&
           <ScrollView>
-            <View key={i} style={styles.Content}>
+            <View style={styles.Content}>
               <View style={styles.topicContent}>
                 <Text style={{ fontSize: 26 }}>题目：{title}</Text>
               </View>
               <View>
                 {option.map((item, index) => {
                   return (
-                    <Text key={index}>{index + '. ' + item}</Text>
+                    <TouchableOpacity key={index} onPress={() => this.selectAnwser(item, index)}>
+                      <Text key={index}>{index + '. ' + item}</Text>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
@@ -123,4 +153,4 @@ class HomeScreen extends React.Component {
 }
 
 
-export default createForm()(HomeScreen);
+export default (HomeScreen);
