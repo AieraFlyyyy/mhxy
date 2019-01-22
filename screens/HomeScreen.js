@@ -108,10 +108,7 @@ class HomeScreen extends React.Component {
     const selectAnwser = this.state.selectAnwser;
     this.state.selectAnwser.splice(i, 1, select);
     this.setState({ selectAnwser });
-  }
-
-  preViewPage = (i) => {
-    this.setState({ i: i - 1 });
+    this.nextPage();
   }
 
   nextPage = (i) => {
@@ -119,7 +116,7 @@ class HomeScreen extends React.Component {
   }
 
   reStart = () => {
-    this.setState({ i: 0 });
+    this.setState({ i: 0, selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], startTime: new Date() });
   }
 
   render() {
@@ -153,20 +150,14 @@ class HomeScreen extends React.Component {
               </View>
               <View style={{ flex: 1, padding: 30 }}></View>
               <View style={styles.footerContent}>
-                {
-                  i > 0 &&
+                {i === 9 &&
                   <TouchableOpacity
-                    onPress={() => this.preViewPage(i)}
+                    onPress={this.reStart}
                   >
-                    <Text>上一页</Text>
+                    <Text>重新答题</Text>
                   </TouchableOpacity>
                 }
-                {i < 9 ?
-                  <TouchableOpacity
-                    onPress={() => this.nextPage(i)}
-                  >
-                    <Text>下一页</Text>
-                  </TouchableOpacity> :
+                {i === 9 &&
                   <TouchableOpacity
                     onPress={this.checkMyGrade}
                   >
