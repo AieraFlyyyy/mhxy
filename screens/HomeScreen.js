@@ -6,10 +6,12 @@ import {
   View,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 // import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
-import img from '../assets/images/魏征.png'
+import img from '../assets/images/魏征.png';
+import topic from '../assets/images/背景.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,25 +26,32 @@ const styles = StyleSheet.create({
   },
   Content: {
     flex: 1,
-    padding: 10,
-    paddingLeft: 30,
+    height: 450,
   },
   topicContent: {
-    flexDirection: 'row',
-    padding: 10,
+    width: 260,
+    height: 150,
+    paddingHorizontal: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   anwserContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   footerContent: {
+    position: 'absolute',
+    bottom: 1,
+    width: '100%',
     alignItems: 'center',
     padding: 10,
   },
   normalOption: {
-    width: 110,
+    width: 100,
     padding: 10,
-    marginBottom: 5,
+    margin: 5,
+    borderRadius: 5,
+    backgroundColor: '#d5d5e0',
   },
 
   Left: {
@@ -56,6 +65,10 @@ const styles = StyleSheet.create({
   Option: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: 5,
+    marginHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#bbb8e2',
   },
 });
 
@@ -134,7 +147,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { start, arr, i, selectAnwser, checkAnwser } = this.state;
+    const { start, arr, i, checkAnwser } = this.state;
     const v = arr[i];
     const checked = checkAnwser[i];
     const { title = '', option = [], anwser = '' } = v;
@@ -150,21 +163,22 @@ class HomeScreen extends React.Component {
         {start &&
           <ScrollView>
             <View style={styles.Content}>
-              <View style={{ flexDirection: 'row', padding: 10 }}>
+              <View style={{ flexDirection: 'row', padding: 10, backgroundColor: '#2c3644' }}>
                 <View style={styles.Left}>
-                  <Image source={img} style={{ width: 120, height: 120 }}></Image>
+                  <Image source={img} style={{ width: 120, height: 150 }}></Image>
                 </View>
                 <View style={styles.Right}>
-                  <View style={styles.topicContent}>
-                    <Text style={{ fontSize: 18 }}>题目：{title}</Text>
-                  </View>
+                  <ImageBackground source={topic} style={styles.topicContent}>
+                    <Text style={{ fontSize: 14 }}>题目：{title}</Text>
+                  </ImageBackground>
                   <View style={styles.Option}>
                     {option.map((item, index) => {
-                      const selected = selectAnwser[i] === item ? true : false;
+                      // const selected = selectAnwser[i] === item ? true : false;
                       const option = index === 0 ? 'A' : index === 1 ? 'B' : index === 2 ? 'C' : index === 3 ? 'D' : '';
                       return (
-                        <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={[{ fontSize: 14 }, selected ? { color: 'red' } : null]} key={index}>
+                        // <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}></TouchableOpacity>
+                        <TouchableOpacity style={styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
+                          <Text style={{ fontSize: 13 }} key={index}>
                             <Text style={{ color: 'blue', fontSize: 18 }}>{option}</Text>{'    ' + item}
                           </Text>
                         </TouchableOpacity>
@@ -173,7 +187,6 @@ class HomeScreen extends React.Component {
                   </View>
                 </View>
               </View>
-              <View style={{ flex: 1, padding: 30 }}></View>
               <View style={styles.footerContent}>
                 <TouchableOpacity onPress={this.checkAnwser}>
                   <Text>查看答案</Text>
