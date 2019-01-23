@@ -5,9 +5,11 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 // import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
+import img from '../assets/images/魏征.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -34,21 +36,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerContent: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     padding: 10,
   },
   normalOption: {
+    width: 110,
     padding: 10,
-    borderWidth: 1,
     marginBottom: 5,
   },
-  selectedOption: {
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5,
-    borderColor: 'red',
+
+  Left: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  Right: {
+    flex: 3
+  },
+  Option: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });
 
@@ -61,6 +68,7 @@ class HomeScreen extends React.Component {
     start: false,
     arr: [],
     selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    checkAnwser: [false, false, false, false, false, false, false, false, false, false],
     i: 0,
     time: '',
   };
@@ -105,23 +113,30 @@ class HomeScreen extends React.Component {
 
   selectAnwser = (select) => {
     const { i } = this.state;
-    const selectAnwser = this.state.selectAnwser;
-    this.state.selectAnwser.splice(i, 1, select);
-    this.setState({ selectAnwser });
-    this.nextPage();
+    if (i < 9) {
+      const selectAnwser = this.state.selectAnwser;
+      this.state.selectAnwser.splice(i, 1, select);
+      this.setState({ selectAnwser, i: i + 1 });
+      return;
+    }
+    this.checkMyGrade(); // 第十题选择完自动跳转
   }
 
-  nextPage = (i) => {
-    this.setState({ i: i + 1 })
+  checkAnwser = () => {
+    const { i } = this.state;
+    const checkAnwser = this.state.checkAnwser;
+    this.state.checkAnwser.splice(i, 1, true);
+    this.setState({ checkAnwser });
   }
 
   reStart = () => {
-    this.setState({ i: 0, selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], startTime: new Date() });
+    this.setState({ i: 0, selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], startTime: new Date(), checkAnwser: [false, false, false, false, false, false, false, false, false, false] });
   }
 
   render() {
-    const { start, arr, i, selectAnwser } = this.state;
+    const { start, arr, i, selectAnwser, checkAnwser } = this.state;
     const v = arr[i];
+    const checked = checkAnwser[i];
     const { title = '', option = [], anwser = '' } = v;
     return (
       <View style={styles.container}>
@@ -135,33 +150,44 @@ class HomeScreen extends React.Component {
         {start &&
           <ScrollView>
             <View style={styles.Content}>
-              <View style={styles.topicContent}>
-                <Text style={{ fontSize: 26 }}>题目：{title}</Text>
-              </View>
-              <View>
-                {option.map((item, index) => {
-                  const selected = selectAnwser[i] === item ? true : false;
-                  return (
-                    <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
-                      <Text style={{ fontSize: 18 }} key={index}>{index + '. ' + item}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
+              <View style={{ flexDirection: 'row', padding: 10 }}>
+                <View style={styles.Left}>
+                  <Image source={img} style={{ width: 120, height: 120 }}></Image>
+                </View>
+                <View style={styles.Right}>
+                  <View style={styles.topicContent}>
+                    <Text style={{ fontSize: 18 }}>题目：{title}</Text>
+                  </View>
+                  <View style={styles.Option}>
+                    {option.map((item, index) => {
+                      const selected = selectAnwser[i] === item ? true : false;
+                      const option = index === 0 ? 'A' : index === 1 ? 'B' : index === 2 ? 'C' : index === 3 ? 'D' : '';
+                      return (
+                        <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
+                          <Text style={[{ fontSize: 14 }, selected ? { color: 'red' } : null]} key={index}>
+                            <Text style={{ color: 'blue', fontSize: 18 }}>{option}</Text>{'    ' + item}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
               </View>
               <View style={{ flex: 1, padding: 30 }}></View>
               <View style={styles.footerContent}>
-                {i === 9 &&
-                  <TouchableOpacity
-                    onPress={this.reStart}
-                  >
-                    <Text>重新答题</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity onPress={this.checkAnwser}>
+                  <Text>查看答案</Text>
+                </TouchableOpacity>
+                {
+                  checked &&
+                  <Text>{anwser}</Text>
                 }
                 {i === 9 &&
                   <TouchableOpacity
-                    onPress={this.checkMyGrade}
+                    onPress={this.reStart}
+                    style={{ marginTop: 30 }}
                   >
-                    <Text>查看分数</Text>
+                    <Text>重新答题</Text>
                   </TouchableOpacity>
                 }
               </View>
