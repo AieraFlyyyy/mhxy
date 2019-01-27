@@ -5,13 +5,10 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   ImageBackground,
 } from 'react-native';
-// import { Toast } from 'antd-mobile';
 import data from '../assets/quest';
-import img from '../assets/images/魏征.png';
-import topic from '../assets/images/背景.png';
+import background from '../assets/images/李世民.png';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,16 +25,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 450,
   },
-  topicContent: {
-    width: 260,
-    height: 150,
-    paddingHorizontal: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  anwserContent: {
+  MainBody: {
     flexDirection: 'row',
-    alignItems: 'center',
+    width: 485,
+    height: 300,
   },
   footerContent: {
     position: 'absolute',
@@ -46,29 +37,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-  normalOption: {
-    width: 100,
-    padding: 10,
-    margin: 5,
-    borderRadius: 5,
-    backgroundColor: '#d5d5e0',
-  },
 
   Left: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    // borderColor: 'red',
+    // borderWidth: 1,
   },
   Right: {
-    flex: 3
+    flex: 3,
+    // borderColor: 'yellow',
+    // borderWidth: 1,
+  },
+  topicContent: {
+    flexDirection: 'row',
+    height: 150,
+    paddingLeft: 50,
+    alignItems: 'center',
+    // borderColor: 'green',
+    // borderWidth: 1,
   },
   Option: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    padding: 5,
-    marginHorizontal: 10,
+    // borderColor: 'blue',
+    // borderWidth: 1,
+    padding: 10,
+    paddingTop: 16,
+  },
+  normalOption: {
+    width: 130,
+    padding: 10,
+    marginTop: 5,
+    marginLeft: 40,
     borderRadius: 5,
-    backgroundColor: '#bbb8e2',
+    paddingTop: 11,
+    // borderColor: 'red',
+    // borderWidth: 1,
+    justifyContent: 'center',
+  },
+  normalOption2: {
+    width: 130,
+    padding: 10,
+    marginTop: 5,
+    marginLeft: 30,
+    borderRadius: 5,
+    paddingLeft: 12,
+    // borderColor: 'blue',
+    // borderWidth: 1,
+    justifyContent: 'center',
   },
 });
 
@@ -108,7 +126,7 @@ class HomeScreen extends React.Component {
     } else if (time > 1000 && time < 60000) {
       useTime = Math.floor(time / 1000) + '秒';
     } else if (time > 60000 && time < 3600000) {
-      useTime = Math.floor(time / 60000) + '分钟' + Math.floor(time % 60000) + '秒';
+      useTime = Math.floor(time / 60000) + '分钟' + Math.floor(time % 60) + '秒';
     } else {
       useTime = '超过一个小时了，你也太慢了8。。';
     }
@@ -163,30 +181,26 @@ class HomeScreen extends React.Component {
         {start &&
           <ScrollView>
             <View style={styles.Content}>
-              <View style={{ flexDirection: 'row', padding: 10, backgroundColor: '#2c3644' }}>
+              <ImageBackground source={background} style={styles.MainBody}>
                 <View style={styles.Left}>
-                  <Image source={img} style={{ width: 120, height: 150 }}></Image>
+                  <View style={{ width: 120, height: 150 }}></View>
                 </View>
                 <View style={styles.Right}>
-                  <ImageBackground source={topic} style={styles.topicContent}>
+                  <View style={styles.topicContent}>
                     <Text style={{ fontSize: 14 }}>题目：{title}</Text>
-                  </ImageBackground>
+                  </View>
                   <View style={styles.Option}>
                     {option.map((item, index) => {
-                      // const selected = selectAnwser[i] === item ? true : false;
-                      const option = index === 0 ? 'A' : index === 1 ? 'B' : index === 2 ? 'C' : index === 3 ? 'D' : '';
+                      const first = index % 2 === 0 ? true : false;
                       return (
-                        // <TouchableOpacity style={selected ? styles.selectedOption : styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}></TouchableOpacity>
-                        <TouchableOpacity style={styles.normalOption} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={{ fontSize: 13 }} key={index}>
-                            <Text style={{ color: 'blue', fontSize: 18 }}>{option}</Text>{'    ' + item}
-                          </Text>
+                        <TouchableOpacity style={first ? styles.normalOption : styles.normalOption2} key={index} onPress={() => this.selectAnwser(item, index)}>
+                          <Text style={{ fontSize: 13 }} key={index}> {item} </Text>
                         </TouchableOpacity>
                       );
                     })}
                   </View>
                 </View>
-              </View>
+              </ImageBackground>
               <View style={styles.footerContent}>
                 <TouchableOpacity onPress={this.checkAnwser}>
                   <Text>查看答案</Text>
