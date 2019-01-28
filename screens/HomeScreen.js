@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   topicContent: {
     flexDirection: 'row',
     height: 150,
+    paddingHorizontal: 30,
     paddingLeft: 50,
     alignItems: 'center',
     // borderColor: 'green',
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
   normalOption: {
     width: 130,
     padding: 10,
-    marginTop: 5,
+    marginTop: 7,
     marginLeft: 40,
     borderRadius: 5,
     paddingTop: 11,
@@ -81,9 +82,9 @@ const styles = StyleSheet.create({
     width: 130,
     padding: 10,
     marginTop: 5,
-    marginLeft: 30,
+    marginLeft: 34,
     borderRadius: 5,
-    paddingLeft: 12,
+    paddingLeft: 9,
     // borderColor: 'blue',
     // borderWidth: 1,
     justifyContent: 'center',
@@ -194,7 +195,7 @@ class HomeScreen extends React.Component {
                       const first = index % 2 === 0 ? true : false;
                       return (
                         <TouchableOpacity style={first ? styles.normalOption : styles.normalOption2} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={{ fontSize: 13 }} key={index}> {item} </Text>
+                          <Text style={{ fontSize: 11 }} key={index}> {item} </Text>
                         </TouchableOpacity>
                       );
                     })}
