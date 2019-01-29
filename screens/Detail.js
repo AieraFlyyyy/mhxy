@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -53,7 +52,7 @@ export default class HomeScreen extends React.Component {
           <Text>总共花了： {useTime}</Text>
         </View>
         <TouchableOpacity style={styles.footerT} onPress={this.restart}>
-          <Text>重新答题</Text>
+          <Text>返回</Text>
         </TouchableOpacity>
       </View>
     );
