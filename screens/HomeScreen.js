@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderColor: 'blue',
     borderWidth: 1,
     padding: 10,
-    paddingTop: 16,
+    paddingTop: 12,
   },
   normalOption: {
     width: 130,
@@ -160,7 +160,7 @@ class HomeScreen extends React.Component {
         grade++;
       }
     });
-    this.setState({ page: '4', useTime, garde });
+    this.setState({ page: '4', useTime, grade });
     // this.props.navigation.push('Detail', {
     //   grade, useTime,
     // });
@@ -182,7 +182,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { page, arr, i } = this.state;
+    const { page, arr, i, grade } = this.state;
     const v = arr[i];
     const { title = '', option = [] } = v;
     return (
@@ -232,7 +232,7 @@ class HomeScreen extends React.Component {
             <View style={styles.Dialog}>
               <View>
                 <Text>
-                  您已答完10道题，共答对（{garde}）道<br />
+                  您已答完10道题，共答对（{grade}）道<br />
                   用时：{useTime}
                 </Text>
               </View>
