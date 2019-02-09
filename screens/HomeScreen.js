@@ -26,11 +26,10 @@ const styles = StyleSheet.create({
     height: 300,
   },
   Dialog: {
-    width: 400,
+    width: 420,
     height: 150,
-    marginTop: -30,
-    borderColor: 'green',
-    borderWidth: 1,
+    marginLeft: 5,
+    marginTop: -120,
   },
   StartBtn: {
     width: 25,
@@ -38,17 +37,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '32%',
     top: '34%',
-    borderColor: 'red',
-    borderWidth: 1,
   },
   SecondBtn: {
     width: 90,
     height: 18,
     position: 'absolute',
-    top: 56,
+    top: 64,
     left: 20,
-    borderColor: 'red',
-    borderWidth: 1,
   },
   Content: {
     flex: 1,
@@ -64,13 +59,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // borderColor: 'red',
-    // borderWidth: 1,
   },
   Right: {
     flex: 3,
-    // borderColor: 'yellow',
-    // borderWidth: 1,
   },
   topicContent: {
     flexDirection: 'row',
@@ -78,16 +69,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingLeft: 50,
     alignItems: 'center',
-    // borderColor: 'green',
-    // borderWidth: 1,
   },
   Option: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    // borderColor: 'blue',
-    // borderWidth: 1,
     padding: 10,
-    paddingTop: 12,
+    paddingTop: 13,
   },
   normalOption: {
     width: 128,
@@ -95,19 +82,22 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginLeft: 49,
     borderRadius: 5,
-    // borderColor: 'red',
-    // borderWidth: 1,
     justifyContent: 'center',
   },
   normalOption2: {
     width: 128,
     height: 40,
     marginTop: 5,
-    marginLeft: 34,
+    marginLeft: 36,
     borderRadius: 5,
-    // borderColor: 'blue',
-    // borderWidth: 1,
     justifyContent: 'center',
+  },
+  CloseBtn: {
+    width: 30,
+    height: 30,
+    position: 'absolute',
+    right: 1,
+    top: 1,
   },
 });
 
@@ -122,9 +112,9 @@ class HomeScreen extends React.Component {
     selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     i: 0,
     time: '',
-    page: '3',
+    page: '1',
     useTime: '',
-    garde: '',
+    grade: '',
   };
 
   componentWillMount() {
@@ -147,9 +137,9 @@ class HomeScreen extends React.Component {
     if (time < 1000) {
       useTime = '小于1秒钟！';
     } else if (time > 1000 && time < 60000) {
-      useTime = Math.floor(time / 1000) + '秒';
+      useTime = (time / 1000).toFixed(1) + '秒';
     } else if (time > 60000 && time < 3600000) {
-      useTime = Math.floor(time / 60000) + '分钟' + Math.floor(time % 60) + '秒';
+      useTime = Math.floor(time / 60000) + '分钟' + (time % 60).toFixed(1) + '秒';
     } else {
       useTime = '超过一个小时了，你也太慢了8。。';
     }
@@ -160,10 +150,7 @@ class HomeScreen extends React.Component {
         grade++;
       }
     });
-    this.setState({ page: '4', useTime, garde });
-    // this.props.navigation.push('Detail', {
-    //   grade, useTime,
-    // });
+    this.setState({ page: '4', useTime, grade });
   }
 
   selectAnwser = (select) => {
@@ -182,7 +169,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { page, arr, i } = this.state;
+    const { page, arr, i, grade, useTime } = this.state;
     const v = arr[i];
     const { title = '', option = [] } = v;
     return (
@@ -231,8 +218,10 @@ class HomeScreen extends React.Component {
           <ImageBackground source={finished} style={styles.FirstView}>
             <View style={styles.Dialog}>
               <View>
-                <Text>
-                  您已答完10道题，共答对（{garde}）道<br />
+                <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
+                  您已答完10道题，共答对（{grade}）道
+                </Text>
+                <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
                   用时：{useTime}
                 </Text>
               </View>
