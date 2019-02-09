@@ -84,29 +84,29 @@ const styles = StyleSheet.create({
   Option: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    borderColor: 'blue',
-    borderWidth: 1,
+    // borderColor: 'blue',
+    // borderWidth: 1,
     padding: 10,
-    paddingTop: 16,
+    paddingTop: 12,
   },
   normalOption: {
-    width: 130,
+    width: 128,
     height: 40,
-    marginTop: 7,
-    marginLeft: 40,
+    marginTop: 6,
+    marginLeft: 49,
     borderRadius: 5,
-    borderColor: 'red',
-    borderWidth: 1,
+    // borderColor: 'red',
+    // borderWidth: 1,
     justifyContent: 'center',
   },
   normalOption2: {
-    width: 130,
+    width: 128,
     height: 40,
     marginTop: 5,
     marginLeft: 34,
     borderRadius: 5,
-    borderColor: 'blue',
-    borderWidth: 1,
+    // borderColor: 'blue',
+    // borderWidth: 1,
     justifyContent: 'center',
   },
 });
@@ -217,7 +217,7 @@ class HomeScreen extends React.Component {
                       const first = index % 2 === 0 ? true : false;
                       return (
                         <TouchableOpacity style={first ? styles.normalOption : styles.normalOption2} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={{ fontSize: 11 }} key={index}> {item} </Text>
+                          <Text style={{ fontSize: 10 }} key={index}> {item} </Text>
                         </TouchableOpacity>
                       );
                     })}
