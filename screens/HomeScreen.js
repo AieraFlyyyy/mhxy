@@ -148,6 +148,8 @@ class HomeScreen extends React.Component {
       const { anwser = '' } = v;
       if (anwser === selectAnwser[i]) {
         grade++;
+      } else {
+        console.log(useTime, '@@');
       }
     });
     this.setState({ page: '4', useTime, grade });
