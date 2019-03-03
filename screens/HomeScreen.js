@@ -33,10 +33,12 @@ const styles = StyleSheet.create({
   },
   StartBtn: {
     width: 25,
-    height: 55,
+    height: 70,
     position: 'absolute',
     left: '32%',
-    top: '34%',
+    top: '32%',
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   SecondBtn: {
     width: 90,
@@ -44,6 +46,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 64,
     left: 20,
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   Content: {
     flex: 1,
@@ -118,40 +122,50 @@ class HomeScreen extends React.Component {
   };
 
   componentWillMount() {
-    const arr = data.map((v, i) => {
-      return { title: v[0], option: v.slice(1, 5).sort(), anwser: v[5] };
-    });
+    let arr = [];
+    for (let i = 0; i < 10; i++) {
+      let ran = Math.floor(Math.random() * (data.length - i));
+      arr.push(data[ran]);
+    };
     this.setState({ arr });
   }
 
   begin = () => {
     const startTime = new Date();
-    this.setState({ page: '2', startTime });
+    this.setState({ page: '3', startTime });
+  }
+
+  randomNum = (max) => {
+    parseInt(Math.random() * (max + 1), 10);
+    Math.floor(Math.random() * (max + 1));
   }
 
   checkMyGrade = () => {
     const { selectAnwser, arr, startTime } = this.state;
     const endTime = new Date();
-    const time = endTime - startTime;
+    let time = endTime - startTime;
     let useTime = '';
+    let grade = 0;
+    arr.map((v, i) => {
+      const anwser = v[5];
+      if (anwser === selectAnwser[i]) {
+        grade++;
+      } else {
+        time += 10000;
+      }
+    });
+
+    console.log(time, '@@@@');
+
     if (time < 1000) {
       useTime = '小于1秒钟！';
     } else if (time > 1000 && time < 60000) {
       useTime = (time / 1000).toFixed(1) + '秒';
     } else if (time > 60000 && time < 3600000) {
-      useTime = Math.floor(time / 60000) + '分钟' + (time % 60).toFixed(1) + '秒';
+      useTime = Math.floor(time / 60000) + '分' + ((time - 60000) / 1000).toFixed(1) + '秒';
     } else {
       useTime = '超过一个小时了，你也太慢了8。。';
     }
-    let grade = 0;
-    arr.map((v, i) => {
-      const { anwser = '' } = v;
-      if (anwser === selectAnwser[i]) {
-        grade++;
-      } else {
-        console.log(useTime, '@@');
-      }
-    });
     this.setState({ page: '4', useTime, grade });
   }
 
@@ -168,24 +182,31 @@ class HomeScreen extends React.Component {
 
   reStart = () => {
     this.setState({ i: 0, selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], startTime: new Date(), page: '1' });
+    let arr = [];
+    for (let i = 0; i < 10; i++) {
+      let ran = Math.floor(Math.random() * (data.length - i));
+      arr.push(data[ran]);
+    };
+    this.setState({ arr });
   }
 
   render() {
     const { page, arr, i, grade, useTime } = this.state;
     const v = arr[i];
-    const { title = '', option = [] } = v;
+    const title = v[0];
+    const option = [v[1], v[2], v[3], v[4]].sort();
     return (
       <View style={styles.container}>
         {page === '1' &&
           <ImageBackground source={first} style={styles.FirstView}>
-            <TouchableOpacity style={styles.StartBtn} onPress={this.begin} >
+            <TouchableOpacity style={styles.StartBtn} onPress={() => this.setState({ page: '2' })} >
             </TouchableOpacity>
           </ImageBackground>
         }
         {page === '2' &&
           <ImageBackground source={second} style={styles.FirstView}>
             <View style={styles.Dialog}>
-              <TouchableOpacity style={styles.SecondBtn} onPress={() => this.setState({ page: '3' })} >
+              <TouchableOpacity style={styles.SecondBtn} onPress={this.begin} >
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -219,7 +240,7 @@ class HomeScreen extends React.Component {
         {page === '4' &&
           <ImageBackground source={finished} style={styles.FirstView}>
             <View style={styles.Dialog}>
-              <View>
+              <View style={{ marginTop: 5, marginLeft: 5 }}>
                 <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
                   您已答完10道题，共答对（{grade}）道
                 </Text>
