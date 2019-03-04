@@ -177,7 +177,9 @@ class HomeScreen extends React.Component {
       this.setState({ selectAnwser, i: i + 1 });
       return;
     }
-    this.checkMyGrade(); // 第十题选择完自动跳转
+    setTimeout(() => {
+      this.checkMyGrade(); // 第十题选择完自动跳转
+    }, 200);
   }
 
   reStart = () => {
@@ -190,11 +192,22 @@ class HomeScreen extends React.Component {
     this.setState({ arr });
   }
 
+  getArrRandomly = (arr) => {
+    var len = arr.length;
+    for (var i = len - 1; i >= 0; i--) {
+      var randomIndex = Math.floor(Math.random() * (i + 1));
+      var itemIndex = arr[randomIndex];
+      arr[randomIndex] = arr[i];
+      arr[i] = itemIndex;
+    }
+    return arr;
+  }
+
   render() {
     const { page, arr, i, grade, useTime } = this.state;
     const v = arr[i];
     const title = v[0];
-    const option = [v[1], v[2], v[3], v[4]].sort();
+    const option = getArrRandomly([v[1], v[2], v[3], v[4]]);
     return (
       <View style={styles.container}>
         {page === '1' &&
