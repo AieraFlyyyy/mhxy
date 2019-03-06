@@ -192,6 +192,7 @@ class HomeScreen extends React.Component {
     this.setState({ arr });
   }
 
+  //打乱答案顺序
   getArrRandomly = (arr) => {
     var len = arr.length;
     for (var i = len - 1; i >= 0; i--) {
