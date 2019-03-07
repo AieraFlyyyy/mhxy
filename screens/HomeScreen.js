@@ -81,20 +81,26 @@ const styles = StyleSheet.create({
     paddingTop: 13,
   },
   normalOption: {
-    width: 128,
+    width: 150,
     height: 40,
-    marginTop: 6,
-    marginLeft: 49,
+    marginTop: 7,
+    marginLeft: 28,
     borderRadius: 5,
     justifyContent: 'center',
+    paddingLeft: 19,
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   normalOption2: {
-    width: 128,
+    width: 150,
     height: 40,
     marginTop: 5,
-    marginLeft: 36,
+    marginLeft: 15,
     borderRadius: 5,
     justifyContent: 'center',
+    paddingLeft: 19,
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   CloseBtn: {
     width: 30,
@@ -208,7 +214,7 @@ class HomeScreen extends React.Component {
     const { page, arr, i, grade, useTime } = this.state;
     const v = arr[i];
     const title = v[0];
-    const option = getArrRandomly([v[1], v[2], v[3], v[4]]);
+    const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]);
     return (
       <View style={styles.container}>
         {page === '1' &&
