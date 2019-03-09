@@ -80,27 +80,43 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingTop: 13,
   },
-  normalOption: {
+  normalOption0: {
     width: 150,
     height: 40,
-    marginTop: 7,
+    marginTop: 8,
     marginLeft: 28,
     borderRadius: 5,
     justifyContent: 'center',
-    paddingLeft: 19,
-    // borderWidth: 1,
-    // borderColor: 'red',
+    paddingLeft: 21,
   },
-  normalOption2: {
+  normalOption1: {
     width: 150,
     height: 40,
     marginTop: 5,
     marginLeft: 15,
     borderRadius: 5,
     justifyContent: 'center',
-    paddingLeft: 19,
+    paddingLeft: 21,
     // borderWidth: 1,
     // borderColor: 'red',
+  },
+  normalOption2: {
+    width: 150,
+    height: 40,
+    marginTop: 3,
+    marginLeft: 28,
+    borderRadius: 5,
+    justifyContent: 'center',
+    paddingLeft: 21,
+  },
+  normalOption3: {
+    width: 150,
+    height: 40,
+    marginTop: 3,
+    marginLeft: 15,
+    borderRadius: 5,
+    justifyContent: 'center',
+    paddingLeft: 21,
   },
   CloseBtn: {
     width: 30,
@@ -128,10 +144,14 @@ class HomeScreen extends React.Component {
   };
 
   componentWillMount() {
+    this.getRandomArr();
+  }
+
+  getRandomArr = () => {
+    const tmpArr = this.getArrRandomly(data);
     let arr = [];
     for (let i = 0; i < 10; i++) {
-      let ran = Math.floor(Math.random() * (data.length - i));
-      arr.push(data[ran]);
+      arr.push(tmpArr[i]);
     };
     this.setState({ arr });
   }
@@ -160,9 +180,7 @@ class HomeScreen extends React.Component {
         time += 10000;
       }
     });
-
-    console.log(time, '@@@@');
-
+    console.log(arr, selectAnwser, grade, '@@');
     if (time < 1000) {
       useTime = '小于1秒钟！';
     } else if (time > 1000 && time < 60000) {
@@ -183,19 +201,16 @@ class HomeScreen extends React.Component {
       this.setState({ selectAnwser, i: i + 1 });
       return;
     }
-    setTimeout(() => {
+    const selectArray = this.state.selectAnwser;
+    this.state.selectAnwser.splice(i, 1, select);
+    this.setState({ selectAnwser: selectArray, i: i + 1 }, () => {
       this.checkMyGrade(); // 第十题选择完自动跳转
-    }, 200);
+    });
   }
 
   reStart = () => {
     this.setState({ i: 0, selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], startTime: new Date(), page: '1' });
-    let arr = [];
-    for (let i = 0; i < 10; i++) {
-      let ran = Math.floor(Math.random() * (data.length - i));
-      arr.push(data[ran]);
-    };
-    this.setState({ arr });
+    this.getRandomArr();
   }
 
   //打乱答案顺序
@@ -211,10 +226,12 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { page, arr, i, grade, useTime } = this.state;
-    const v = arr[i];
-    const title = v[0];
-    const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]);
+    const { page, arr, i, grade, useTime, selectAnwser } = this.state;
+    const v = arr[i] || [];
+    const title = v[0] || '';
+    const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
+
+    // console.log(arr, selectAnwser, grade, '@@');
     return (
       <View style={styles.container}>
         {page === '1' &&
@@ -240,14 +257,14 @@ class HomeScreen extends React.Component {
                 </View>
                 <View style={styles.Right}>
                   <View style={styles.topicContent}>
-                    <Text style={{ fontSize: 14 }}>题目：{title}</Text>
+                    <Text style={{ fontSize: 13 }}>题目：{title}</Text>
                   </View>
                   <View style={styles.Option}>
                     {option.map((item, index) => {
-                      const first = index % 2 === 0 ? true : false;
+                      // const first = index % 2 === 0 ? true : false;
                       return (
-                        <TouchableOpacity style={first ? styles.normalOption : styles.normalOption2} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={{ fontSize: 10 }} key={index}> {item} </Text>
+                        <TouchableOpacity style={styles[`normalOption${index}`]} key={index} onPress={() => this.selectAnwser(item, index)}>
+                          <Text style={{ fontSize: 12 }} key={index}> {item} </Text>
                         </TouchableOpacity>
                       );
                     })}
