@@ -231,7 +231,7 @@ class HomeScreen extends React.Component {
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
 
-    // console.log(arr, selectAnwser, grade, '@@');
+    console.log(arr, selectAnwser, grade, '@@');
     return (
       <View style={styles.container}>
         {page === '1' &&
