@@ -127,6 +127,8 @@ const styles = StyleSheet.create({
   },
 });
 
+// 准备新开一个库来开发了，加入错题回顾，以及激活码控制使用周期
+
 class HomeScreen extends React.Component {
   static navigationOptions = {
     title: '梦幻答题',
