@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mhxy",
+    "name": "梦幻西游答题",
     "slug": "mhxy",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -8,8 +8,8 @@
       "ios",
       "android"
     ],
-    "githubUrl": "https://github.com/AieraFlyyyy/mhxy",
-    "version": "1.0.0",
+    "githubUrl": "https://github.com/AieraFlyyyy/newMHXY",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -27,7 +27,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.mhxy.yaoming",
+      "package": "com.newMHXY.yaoming",
       "versionCode": 1,
       "icon": "./assets/images/ic_launcher.png"
     }

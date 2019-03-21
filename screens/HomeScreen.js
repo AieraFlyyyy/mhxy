@@ -174,12 +174,16 @@ class HomeScreen extends React.Component {
     let time = endTime - startTime;
     let useTime = '';
     let grade = 0;
+    let WrongAnwser = [];
+    let WrongGrade = 0;
     arr.map((v, i) => {
       const anwser = v[5];
       if (anwser === selectAnwser[i]) {
         grade++;
       } else {
         time += 10000;
+        WrongGrade++;
+        WrongAnwser.push({ anwser, i });
       }
     });
     console.log(arr, selectAnwser, grade, '@@');
@@ -192,7 +196,7 @@ class HomeScreen extends React.Component {
     } else {
       useTime = '超过一个小时了，你也太慢了8。。';
     }
-    this.setState({ page: '4', useTime, grade });
+    this.setState({ page: '4', useTime, grade, WrongAnwser, WrongGrade });
   }
 
   selectAnwser = (select) => {
@@ -228,12 +232,12 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    const { page, arr, i, grade, useTime, selectAnwser } = this.state;
+    const { page, arr, i, grade, useTime, WrongAnwser, WrongGrade } = this.state;
     const v = arr[i] || [];
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
 
-    console.log(arr, selectAnwser, grade, '@@');
+    console.log(WrongAnwser, WrongGrade, '@@');
     return (
       <View style={styles.container}>
         {page === '1' &&
@@ -287,6 +291,20 @@ class HomeScreen extends React.Component {
                   用时：{useTime}
                 </Text>
               </View>
+              {
+                WrongAnwser.length > 0 && WrongGrade > 0 &&
+                <View>
+                  <Text>您答错了（{WrongGrade}）道题</Text>
+                  {
+                    WrongAnwser.map((v) => {
+                      const { i = '', anwser = '' } = v;
+                      return (
+                        <Text>第{i}道，答案：{anwser}</Text>
+                      );
+                    })
+                  }
+                </View>
+              }
               <TouchableOpacity style={styles.CloseBtn} onPress={this.reStart} >
               </TouchableOpacity>
             </View>
