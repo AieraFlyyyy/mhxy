@@ -293,13 +293,13 @@ class HomeScreen extends React.Component {
               </View>
               {
                 WrongAnwser.length > 0 && WrongGrade > 0 &&
-                <View>
-                  <Text>您答错了（{WrongGrade}）道题</Text>
+                <View style={{ padding: 5 }}>
+                  <Text style={{ fontSize: 18, marginTop: 5, color: 'white' }}>您答错了（{WrongGrade}）道题</Text>
                   {
                     WrongAnwser.map((v) => {
                       const { i = '', anwser = '' } = v;
                       return (
-                        <Text>第{i}道，答案：{anwser}</Text>
+                        <Text key={i} style={{ fontSize: 15, marginTop: 1, color: 'white' }}>第{i}道，答案：{anwser}</Text>
                       );
                     })
                   }
