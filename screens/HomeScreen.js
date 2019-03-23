@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
+import { TextareaItem, message } from '@ant-design/react-native'
 import data from '../assets/quest';
+import Arr from '../assets/quest';
 import first from '../assets/images/第一界面.png';
 import second from '../assets/images/第二界面.png';
 import background from '../assets/images/李世民.png';
@@ -128,8 +130,11 @@ const styles = StyleSheet.create({
 });
 
 // 准备新开一个库来开发了，加入错题回顾，以及激活码控制使用周期
+const localStorage = window.localStorage;
+const limit = 2592000;
 
 class HomeScreen extends React.Component {
+
   static navigationOptions = {
     title: '梦幻答题',
   };
@@ -140,7 +145,7 @@ class HomeScreen extends React.Component {
     selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     i: 0,
     time: '',
-    page: '1',
+    page: '0',
     useTime: '',
     grade: '',
   };
@@ -231,6 +236,25 @@ class HomeScreen extends React.Component {
     return arr;
   }
 
+  onTextareaItemChange = (val) => {
+    console.log(val, '@@@@@');
+    this.setState({ activating: val });
+  }
+
+  activating = () => {
+    const { activating } = this.state;
+    console.log(Arr, activating, '@@##');
+    const aaa = Arr.find((v) => v === activating);
+    if (aaa) {
+      message.success('激活成功', () => {
+        this.setState({ page: '1' });
+        localStorage.setItem('', limit);
+      }, 1);
+    } else {
+      message.error('激活码无效，请重新输入');
+    }
+  }
+
   render() {
     const { page, arr, i, grade, useTime, WrongAnwser, WrongGrade } = this.state;
     const v = arr[i] || [];
@@ -240,6 +264,16 @@ class HomeScreen extends React.Component {
     console.log(WrongAnwser, WrongGrade, '@@');
     return (
       <View style={styles.container}>
+        {
+          page === '0' &&
+          <View>
+            <Text>请输入激活码</Text>
+            <TextareaItem onChange={this.onTextareaItemChange} />
+            <TouchableOpacity style={styles.StartBtn} onPress={this.activating} >
+              <Text>提交</Text>
+            </TouchableOpacity>
+          </View>
+        }
         {page === '1' &&
           <ImageBackground source={first} style={styles.FirstView}>
             <TouchableOpacity style={styles.StartBtn} onPress={() => this.setState({ page: '2' })} >
