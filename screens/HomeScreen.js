@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import { TextareaItem, message } from '@ant-design/react-native'
+import { TextareaItem, Modal } from '@ant-design/react-native'
 import data from '../assets/quest';
-import Arr from '../assets/quest';
+import Arr from '../assets/activing';
 import first from '../assets/images/第一界面.png';
 import second from '../assets/images/第二界面.png';
 import background from '../assets/images/李世民.png';
@@ -243,15 +243,36 @@ class HomeScreen extends React.Component {
 
   activating = () => {
     const { activating } = this.state;
-    console.log(Arr, activating, '@@##');
     const aaa = Arr.find((v) => v === activating);
     if (aaa) {
-      message.success('激活成功', () => {
-        this.setState({ page: '1' });
-        localStorage.setItem('', limit);
-      }, 1);
+      console.log(aaa, '@@@###');
+      Modal.alert(
+        '提示',
+        '激活成功',
+        [
+          {
+            text: '确定',
+            onPress: () => {
+              this.setState({ page: '1' });
+              localStorage.setItem('', limit);
+            },
+          }
+        ]
+      );
     } else {
-      message.error('激活码无效，请重新输入');
+      console.log('@@@###@$%@$(@#)(@I#U');
+      Modal.alert(
+        '提示',
+        '激活码无效，请重新输入',
+        [
+          {
+            text: '确定',
+            onPress: () => {
+
+            },
+          }
+        ]
+      );
     }
   }
 
@@ -261,7 +282,7 @@ class HomeScreen extends React.Component {
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
 
-    console.log(WrongAnwser, WrongGrade, '@@');
+    // console.log(WrongAnwser, WrongGrade, '@@');
     return (
       <View style={styles.container}>
         {
