@@ -6,14 +6,16 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  TextInput,
+  AsyncStorage,
 } from 'react-native';
-import { TextareaItem, Modal } from '@ant-design/react-native'
 import data from '../assets/quest';
 import Arr from '../assets/activing';
 import first from '../assets/images/第一界面.png';
 import second from '../assets/images/第二界面.png';
 import background from '../assets/images/李世民.png';
 import finished from '../assets/images/答完题界面.png';
+
 
 const styles = StyleSheet.create({
   container: {
@@ -127,11 +129,45 @@ const styles = StyleSheet.create({
     right: 1,
     top: 1,
   },
+  Activating: {
+    flex: 1,
+    flexDirection: "column",
+    paddingTop: 100,
+    alignItems: 'center',
+  },
+  ActivatingText: {
+    borderWidth: 1,
+    width: '60%',
+  },
+  LastView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 485,
+    height: 300,
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  DialogLast: {
+    width: 420,
+    height: 150,
+    marginLeft: 5,
+    marginTop: -120,
+  },
+  WrongAnwser: {
+    padding: 5,
+    position: 'absolute',
+    bottom: 5,
+    height: 290,
+    borderWidth: 1,
+  },
 });
 
 // 准备新开一个库来开发了，加入错题回顾，以及激活码控制使用周期
-const localStorage = window.localStorage;
-const limit = 2592000;
+
+const limit = {
+  date: new Date(),
+  limit: 2592000000,
+};
 
 class HomeScreen extends React.Component {
 
@@ -152,6 +188,33 @@ class HomeScreen extends React.Component {
 
   componentWillMount() {
     this.getRandomArr();
+  }
+
+  componentDidMount() {
+    const now = new Date();
+    const nowDate = now.getTime();
+
+    AsyncStorage.getItem('limit', (error) => {
+      if (error) {
+        console.log('读取失败');
+      } else {
+        console.log('读取成功');
+      }
+    }).then(val => {
+      if (!val) {
+        this.setState({ page: '0' });
+        return;
+      }
+      const { date = '', limit = 0 } = JSON.parse(val);
+      const activingDate = new Date(date).getTime();
+      console.log(nowDate, activingDate, '##');
+      if (nowDate - activingDate > limit) {
+        alert('您的使用时间已到期，请使用新的激活码激活');
+        this.setState({ page: '0' });
+      } else {
+        this.setState({ page: '1' });
+      }
+    })
   }
 
   getRandomArr = () => {
@@ -236,43 +299,29 @@ class HomeScreen extends React.Component {
     return arr;
   }
 
-  onTextareaItemChange = (val) => {
-    console.log(val, '@@@@@');
-    this.setState({ activating: val });
-  }
-
   activating = () => {
     const { activating } = this.state;
     const aaa = Arr.find((v) => v === activating);
+    console.log(activating, '@@');
+    if (!activating) {
+      alert('请输入激活码');
+      return;
+    }
     if (aaa) {
-      console.log(aaa, '@@@###');
-      Modal.alert(
-        '提示',
-        '激活成功',
-        [
-          {
-            text: '确定',
-            onPress: () => {
-              this.setState({ page: '1' });
-              localStorage.setItem('', limit);
-            },
+      alert('激活成功');
+      setTimeout(() => {
+        this.setState({ page: '1' });
+        AsyncStorage.setItem('limit', JSON.stringify(limit), (error) => {
+          if (error) {
+            console.log('存储失败');
+          } else {
+            console.log('存储完成');
           }
-        ]
-      );
+        });
+      }, 1500);
     } else {
       console.log('@@@###@$%@$(@#)(@I#U');
-      Modal.alert(
-        '提示',
-        '激活码无效，请重新输入',
-        [
-          {
-            text: '确定',
-            onPress: () => {
-
-            },
-          }
-        ]
-      );
+      alert('激活码无效');
     }
   }
 
@@ -282,16 +331,16 @@ class HomeScreen extends React.Component {
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
 
-    // console.log(WrongAnwser, WrongGrade, '@@');
+    // console.log(window, '$$$');
     return (
       <View style={styles.container}>
         {
           page === '0' &&
-          <View>
-            <Text>请输入激活码</Text>
-            <TextareaItem onChange={this.onTextareaItemChange} />
-            <TouchableOpacity style={styles.StartBtn} onPress={this.activating} >
-              <Text>提交</Text>
+          <View style={styles.Activating}>
+            <Text style={{ fontSize: 20 }}>请输入激活码</Text>
+            <TextInput style={styles.ActivatingText} onChangeText={(val) => this.setState({ activating: val })} />
+            <TouchableOpacity style={{ marginTop: 15 }} onPress={this.activating} >
+              <Text style={{ fontSize: 20 }}>确定</Text>
             </TouchableOpacity>
           </View>
         }
@@ -336,8 +385,8 @@ class HomeScreen extends React.Component {
           </ScrollView>
         }
         {page === '4' &&
-          <ImageBackground source={finished} style={styles.FirstView}>
-            <View style={styles.Dialog}>
+          <ImageBackground source={finished} style={styles.LastView}>
+            <View style={styles.DialogLast}>
               <View style={{ marginTop: 5, marginLeft: 5 }}>
                 <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
                   您已答完10道题，共答对（{grade}）道
@@ -346,24 +395,24 @@ class HomeScreen extends React.Component {
                   用时：{useTime}
                 </Text>
               </View>
-              {
-                WrongAnwser.length > 0 && WrongGrade > 0 &&
-                <View style={{ padding: 5 }}>
-                  <Text style={{ fontSize: 18, marginTop: 5, color: 'white' }}>您答错了（{WrongGrade}）道题</Text>
-                  {
-                    WrongAnwser.map((v) => {
-                      const { i = '', anwser = '' } = v;
-                      return (
-                        <Text key={i} style={{ fontSize: 15, marginTop: 1, color: 'white' }}>第{i}道，答案：{anwser}</Text>
-                      );
-                    })
-                  }
-                </View>
-              }
               <TouchableOpacity style={styles.CloseBtn} onPress={this.reStart} >
               </TouchableOpacity>
             </View>
           </ImageBackground>
+        }
+        {
+          page === '4' && WrongAnwser.length > 0 && WrongGrade > 0 &&
+          <View style={styles.WrongAnwser}>
+            <Text style={{ fontSize: 18, marginTop: 5 }}>您答错了（{WrongGrade}）道题</Text>
+            {
+              WrongAnwser.map((v) => {
+                const { i = '', anwser = '' } = v;
+                return (
+                  <Text key={i} style={{ fontSize: 15, marginTop: 1 }}>第{i + 1}道，答案：{anwser}</Text>
+                );
+              })
+            }
+          </View>
         }
       </View>
     );
