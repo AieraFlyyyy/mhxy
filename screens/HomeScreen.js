@@ -144,21 +144,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 485,
     height: 300,
-    borderWidth: 1,
-    borderColor: 'red',
   },
   DialogLast: {
     width: 420,
     height: 150,
     marginLeft: 5,
-    marginTop: -120,
+    marginTop: 150,
   },
   WrongAnwser: {
     padding: 5,
     position: 'absolute',
     bottom: 5,
     height: 290,
-    borderWidth: 1,
   },
 });
 
@@ -179,6 +176,7 @@ class HomeScreen extends React.Component {
     start: false,
     arr: [],
     selectAnwser: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    activingArr: [],
     i: 0,
     time: '',
     page: '0',
@@ -193,6 +191,7 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     const now = new Date();
     const nowDate = now.getTime();
+    AsyncStorage.clear();
 
     AsyncStorage.getItem('limit', (error) => {
       if (error) {
@@ -205,14 +204,15 @@ class HomeScreen extends React.Component {
         this.setState({ page: '0' });
         return;
       }
-      const { date = '', limit = 0 } = JSON.parse(val);
+      const { activingArr = [], limit = {} } = JSON.parse(val);
+      const { date = '', limit: theLimit = '' } = limit;
       const activingDate = new Date(date).getTime();
       console.log(nowDate, activingDate, '##');
-      if (nowDate - activingDate > limit) {
+      if (nowDate - activingDate > theLimit) {
         alert('您的使用时间已到期，请使用新的激活码激活');
-        this.setState({ page: '0' });
+        this.setState({ page: '0', activingArr });
       } else {
-        this.setState({ page: '1' });
+        this.setState({ page: '1', activingArr });
       }
     })
   }
@@ -258,9 +258,9 @@ class HomeScreen extends React.Component {
     if (time < 1000) {
       useTime = '小于1秒钟！';
     } else if (time > 1000 && time < 60000) {
-      useTime = (time / 1000).toFixed(1) + '秒';
+      useTime = (time / 1000).toFixed(2) + '秒';
     } else if (time > 60000 && time < 3600000) {
-      useTime = Math.floor(time / 60000) + '分' + ((time - 60000) / 1000).toFixed(1) + '秒';
+      useTime = Math.floor(time / 60000) + '分' + ((time - 60000) / 1000).toFixed(2) + '秒';
     } else {
       useTime = '超过一个小时了，你也太慢了8。。';
     }
@@ -300,18 +300,23 @@ class HomeScreen extends React.Component {
   }
 
   activating = () => {
-    const { activating } = this.state;
+    const { activating, activingArr: lastActivating } = this.state;
     const aaa = Arr.find((v) => v === activating);
     console.log(activating, '@@');
     if (!activating) {
       alert('请输入激活码');
       return;
     }
+    if (lastActivating !== '1553319997' && lastActivating.find(v => { activating === v })) {
+      alert('激活码已失效');
+      return;
+    }
     if (aaa) {
       alert('激活成功');
       setTimeout(() => {
         this.setState({ page: '1' });
-        AsyncStorage.setItem('limit', JSON.stringify(limit), (error) => {
+        const activingArr = [...this.state.activingArr, ...activating];
+        AsyncStorage.setItem('limit', JSON.stringify({ limit, activingArr }), (error) => {
           if (error) {
             console.log('存储失败');
           } else {
@@ -374,7 +379,7 @@ class HomeScreen extends React.Component {
                       // const first = index % 2 === 0 ? true : false;
                       return (
                         <TouchableOpacity style={styles[`normalOption${index}`]} key={index} onPress={() => this.selectAnwser(item, index)}>
-                          <Text style={{ fontSize: 12 }} key={index}> {item} </Text>
+                          <Text style={{ fontSize: 11 }} key={index}> {item} </Text>
                         </TouchableOpacity>
                       );
                     })}
