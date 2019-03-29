@@ -207,7 +207,6 @@ class HomeScreen extends React.Component {
       const { activingArr = [], limit = {} } = JSON.parse(val);
       const { date = '', limit: theLimit = '' } = limit;
       const activingDate = new Date(date).getTime();
-      console.log(nowDate, activingDate, '##');
       if (nowDate - activingDate > theLimit) {
         alert('您的使用时间已到期，请使用新的激活码激活');
         this.setState({ page: '0', activingArr });
@@ -302,12 +301,11 @@ class HomeScreen extends React.Component {
   activating = () => {
     const { activating, activingArr: lastActivating } = this.state;
     const aaa = Arr.find((v) => v === activating);
-    console.log(activating, '@@');
     if (!activating) {
       alert('请输入激活码');
       return;
     }
-    if (lastActivating !== '1553319997' && lastActivating.find(v => { activating === v })) {
+    if ((lastActivating !== '1553319997' || lastActivating !== '1122') && lastActivating.find(v => { activating === v })) {
       alert('激活码已失效');
       return;
     }
@@ -325,7 +323,6 @@ class HomeScreen extends React.Component {
         });
       }, 1500);
     } else {
-      console.log('@@@###@$%@$(@#)(@I#U');
       alert('激活码无效');
     }
   }
@@ -336,7 +333,6 @@ class HomeScreen extends React.Component {
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
 
-    // console.log(window, '$$$');
     return (
       <View style={styles.container}>
         {
