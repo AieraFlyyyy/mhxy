@@ -9,13 +9,13 @@ import {
   TextInput,
   AsyncStorage,
 } from 'react-native';
+import { Font } from 'expo';
 import data from '../assets/quest';
 import Arr from '../assets/activing';
 import first from '../assets/images/第一界面.png';
 import second from '../assets/images/第二界面.png';
 import background from '../assets/images/李世民.png';
 import finished from '../assets/images/答完题界面.png';
-
 
 const styles = StyleSheet.create({
   container: {
@@ -169,7 +169,7 @@ const limit = {
 class HomeScreen extends React.Component {
 
   static navigationOptions = {
-    title: '梦幻答题',
+    title: '回忆答题《3.0完美加强版》 2019.5.18',
   };
 
   state = {
@@ -182,6 +182,7 @@ class HomeScreen extends React.Component {
     page: '0',
     useTime: '',
     grade: '',
+    fontsLoaded: false,
   };
 
   componentWillMount() {
@@ -191,7 +192,7 @@ class HomeScreen extends React.Component {
   componentDidMount() {
     const now = new Date();
     const nowDate = now.getTime();
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
 
     AsyncStorage.getItem('limit', (error) => {
       if (error) {
@@ -214,6 +215,9 @@ class HomeScreen extends React.Component {
         this.setState({ page: '1', activingArr });
       }
     })
+    Font.loadAsync({
+      'song': require('../assets/fonts/song.ttf')
+    }).then(() => this.setState({ fontsLoaded: true }))
   }
 
   getRandomArr = () => {
@@ -332,14 +336,14 @@ class HomeScreen extends React.Component {
     const v = arr[i] || [];
     const title = v[0] || '';
     const option = this.getArrRandomly([v[1], v[2], v[3], v[4]]) || [];
-
+    console.log(Font)
     return (
       <View style={styles.container}>
         {
           page === '0' &&
           <View style={styles.Activating}>
             <Text style={{ fontSize: 20 }}>请输入激活码</Text>
-            <TextInput style={styles.ActivatingText} onChangeText={(val) => this.setState({ activating: val })} />
+            <TextInput secureTextEntry style={styles.ActivatingText} onChangeText={(val) => this.setState({ activating: val })} />
             <TouchableOpacity style={{ marginTop: 15 }} onPress={this.activating} >
               <Text style={{ fontSize: 20 }}>确定</Text>
             </TouchableOpacity>
@@ -389,10 +393,10 @@ class HomeScreen extends React.Component {
           <ImageBackground source={finished} style={styles.LastView}>
             <View style={styles.DialogLast}>
               <View style={{ marginTop: 5, marginLeft: 5 }}>
-                <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
+                <Text style={{ fontSize: 20, marginTop: 10, color: 'white', fontFamily: 'song' }}>
                   您已答完10道题，共答对（{grade}）道
                 </Text>
-                <Text style={{ fontSize: 20, marginTop: 10, color: 'white' }}>
+                <Text style={{ fontSize: 20, marginTop: 10, color: 'white', fontFamily: 'song' }}>
                   用时：{useTime}
                 </Text>
               </View>
@@ -404,12 +408,12 @@ class HomeScreen extends React.Component {
         {
           page === '4' && WrongAnwser.length > 0 && WrongGrade > 0 &&
           <View style={styles.WrongAnwser}>
-            <Text style={{ fontSize: 18, marginTop: 5 }}>您答错了（{WrongGrade}）道题</Text>
+            <Text style={{ fontSize: 18, marginTop: 5, fontFamily: 'song' }}>您答错了（{WrongGrade}）道题</Text>
             {
               WrongAnwser.map((v) => {
                 const { i = '', anwser = '' } = v;
                 return (
-                  <Text key={i} style={{ fontSize: 15, marginTop: 1 }}>第{i + 1}道，答案：{anwser}</Text>
+                  <Text key={i} style={{ fontSize: 15, marginTop: 1, fontFamily: 'song' }}>第{i + 1}道，答案：{anwser}</Text>
                 );
               })
             }

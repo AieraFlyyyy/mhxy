@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "梦幻西游答题",
+    "name": "回忆答题",
     "slug": "mhxy",
     "privacy": "public",
     "sdkVersion": "32.0.0",
@@ -27,7 +27,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.newMHXY.yaoming",
+      "package": "com.theMHXY.yaoming",
       "versionCode": 1,
       "icon": "./assets/images/ic_launcher.png"
     }
